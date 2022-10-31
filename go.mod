@@ -2,6 +2,13 @@ module github.com/fsgo/gopt
 
 go 1.19
 
-require github.com/fsgo/gomodule v0.0.0-20221031054615-38bac21a9f21
+require (
+	github.com/fsgo/fscache v0.0.0-20221008061901-b89ccaafee04
+	github.com/fsgo/gomodule v0.0.0-20221031054615-38bac21a9f21
+	golang.org/x/mod v0.6.0
+)
 
-require golang.org/x/mod v0.6.0 // indirect
+require (
+	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
+)
