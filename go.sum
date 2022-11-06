@@ -1,7 +1,7 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
-github.com/fsgo/fscache v0.0.0-20221008061901-b89ccaafee04 h1:JTEC1fAfWOu6ynmrNXX+ceog+X77YPkS4y2hmeVyzTQ=
-github.com/fsgo/fscache v0.0.0-20221008061901-b89ccaafee04/go.mod h1:GehJJ8wipsEeINaqMb2lLJD3m7uIAyBKRB7yeR+twmA=
+github.com/fsgo/fscache v0.0.0-20221106082135-4385911b5ab4 h1:bDqC8tLr8aszbX0sZjHSM041o7Cs/VUGDXS3PjDVXII=
+github.com/fsgo/fscache v0.0.0-20221106082135-4385911b5ab4/go.mod h1:KCRB2DyOLTw1rJn8Hd81VYr4lIcAp2Ow/K8vjOVFrUg=
 github.com/fsgo/gomodule v0.0.0-20221031054615-38bac21a9f21 h1:z2DEPwa5UCfRJmVAxwEmR6Bx1FqSifBIAXSV1PMmdkk=
 github.com/fsgo/gomodule v0.0.0-20221031054615-38bac21a9f21/go.mod h1:2PohNgYrEB6cEuq52YKb1esOCvWGJAW1Kyapm80y0fg=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

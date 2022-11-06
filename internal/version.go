@@ -19,8 +19,9 @@ import (
 var versionCache fscache.SCache
 
 func init() {
+	cacheDir := filepath.Join(os.TempDir(), "gopt", "latest_cache")
 	fc, err := filecache.NewSCache(&filecache.Option{
-		Dir:        filepath.Join(os.TempDir(), "gopt", "latest_cache"),
+		Dir:        cacheDir,
 		GCInterval: time.Hour,
 	})
 	if err != nil {
@@ -31,11 +32,9 @@ func init() {
 
 func latest(ctx context.Context, path string) (*gomodule.Info, error) {
 	ret := versionCache.Get(ctx, path)
-	if ret.Has() {
-		var info *gomodule.Info
-		if ok, e1 := ret.Value(&info); ok && e1 == nil {
-			return info, nil
-		}
+	var info *gomodule.Info
+	if ok, _ := ret.Value(&info); ok {
+		return info, nil
 	}
 	pm := &gomodule.GoProxy{
 		Module: path,
