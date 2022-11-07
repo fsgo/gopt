@@ -8,12 +8,14 @@ import (
 	"context"
 	"debug/buildinfo"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
 
+	"github.com/fatih/color"
 	"golang.org/x/mod/semver"
 )
 
@@ -22,21 +24,52 @@ func Update(args []string) error {
 	if err := u.setup(args); err != nil {
 		return err
 	}
-	sc := &Scanner{
-		Call: u.onCall,
-	}
-	return sc.Run()
+	return u.Run()
 }
 
 type updater struct {
+	flags     *flag.FlagSet
 	timeout   int
 	numFailed int
 }
 
 func (u *updater) setup(args []string) error {
-	cf := flag.NewFlagSet("list", flag.ExitOnError)
-	cf.IntVar(&u.timeout, "timeout", 60, `update timeout, seconds`)
-	return cf.Parse(args)
+	u.flags = flag.NewFlagSet("list", flag.ExitOnError)
+	u.flags.IntVar(&u.timeout, "T", 60, `update timeout, seconds`)
+	return u.flags.Parse(args)
+}
+
+func (u *updater) Run() error {
+	args := u.flags.Args()
+	if len(args) > 1 {
+		return fmt.Errorf("not support %q", args)
+	}
+	if len(args) == 0 {
+		sc := &Scanner{
+			Call: u.onCall,
+		}
+		return sc.Run()
+	}
+	wantName := args[0] + exe()
+	var found bool
+	sc := &Scanner{
+		Call: func(name string, bi *buildinfo.BuildInfo) error {
+			bn := filepath.Base(name)
+			if bn != wantName {
+				return nil
+			}
+			found = true
+			return u.onCall(name, bi)
+		},
+	}
+	err := sc.Run()
+	if err != nil {
+		return err
+	}
+	if !found {
+		return fmt.Errorf("not found %q", wantName)
+	}
+	return nil
 }
 
 func (u *updater) getTimeout() time.Duration {
@@ -48,8 +81,8 @@ func (u *updater) getTimeout() time.Duration {
 
 func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 	bn := filepath.Base(name)
-	log.SetPrefix(ConsoleGreen("[" + bn + "] "))
-	log.Println(ConsoleGreen(name), bi.Path+"@"+bi.Main.Version)
+	log.SetPrefix(color.GreenString("[" + bn + "] "))
+	log.Println(color.CyanString(name), bi.Path+"@"+bi.Main.Version)
 
 	if bi.Main.Version == develVersion {
 		log.Println("skipped update by version:", develVersion)
@@ -58,10 +91,10 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), u.getTimeout())
 	defer cancel()
-	mp, err := latest(ctx, bi.Path)
+	mp, err := latest(ctx, bi.Main.Path)
 	if err != nil {
 		u.numFailed++
-		log.Println("get latest info failed:", err.Error())
+		log.Println(color.RedString("get latest info failed: " + err.Error()))
 		return nil
 	}
 	log.Println("found latest:", mp.Version, mp.Time.String())
@@ -79,9 +112,9 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	if err = cmd.Run(); err != nil {
-		log.Println(ConsoleRed("install failed: " + err.Error()))
+		log.Println(color.RedString("install failed: " + err.Error()))
 	} else {
-		log.Println(ConsoleGreen("install success"))
+		log.Println(color.GreenString("install success"))
 	}
 	return nil
 }

@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -45,4 +46,15 @@ func (s *Scanner) Run() error {
 		}
 	}
 	return nil
+}
+
+func isWindows() bool {
+	return runtime.GOOS == "windows"
+}
+
+func exe() string {
+	if isWindows() {
+		return ".exe"
+	}
+	return ""
 }
