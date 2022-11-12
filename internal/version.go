@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/fsgo/fscache"
@@ -34,6 +35,9 @@ func init() {
 }
 
 func latest(ctx context.Context, path string) (*gomodule.Info, error) {
+	if !strings.Contains(path, ".") {
+		return nil, fmt.Errorf(" missing dot in path %q", path)
+	}
 	ret := versionCache.Get(ctx, path)
 	var info *gomodule.Info
 	if ok, _ := ret.Value(&info); ok {

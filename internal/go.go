@@ -16,7 +16,6 @@ func newGoCommand(ctx context.Context, arg ...string) *exec.Cmd {
 	goBin := gosdk.LatestOrDefault()
 	cmd := exec.CommandContext(ctx, goBin, arg...)
 	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Env = gosdk.GoCmdEnv(goBin, nil)
 	return cmd
