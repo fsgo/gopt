@@ -10,8 +10,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
-	"os/exec"
 	"path/filepath"
 	"time"
 
@@ -34,7 +32,7 @@ type updater struct {
 }
 
 func (u *updater) setup(args []string) error {
-	u.flags = flag.NewFlagSet("list", flag.ExitOnError)
+	u.flags = flag.NewFlagSet("update", flag.ExitOnError)
 	u.flags.IntVar(&u.timeout, "T", 60, `update timeout, seconds`)
 	return u.flags.Parse(args)
 }
@@ -106,11 +104,8 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 		log.Println("filename not match, skipped")
 		return nil
 	}
-	cmd := exec.CommandContext(ctx, "go", "install", bi.Path+"@latest")
+	cmd := newGoCommand(ctx, "install", bi.Path+"@latest")
 	log.Println("will update:", cmd.String())
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-	cmd.Stdin = os.Stdin
 	if err = cmd.Run(); err != nil {
 		log.Println(color.RedString("install failed: " + err.Error()))
 	} else {

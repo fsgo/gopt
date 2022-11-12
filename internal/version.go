@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"time"
 
@@ -51,8 +50,7 @@ func latest(ctx context.Context, path string) (*gomodule.Info, error) {
 		return info, nil
 	}
 
-	cmd1 := exec.CommandContext(ctx, "go", "list", "-m", "-json", path+"@latest")
-	cmd1.Stdin = os.Stdin
+	cmd1 := newGoCommand(ctx, "list", "-m", "-json", path+"@latest")
 	buf1 := &bytes.Buffer{}
 	cmd1.Stderr = buf1
 	out, err3 := cmd1.Output()
