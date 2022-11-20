@@ -10,10 +10,14 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
+	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/fsgo/cmdutil"
 	"golang.org/x/mod/semver"
 )
 
@@ -99,17 +103,53 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 	if semver.Compare(mp.Version, bi.Main.Version) < 1 {
 		return nil
 	}
-	// 二进制文件名已经改名，暂时不能直接使用 go install 安装替换
-	if filepath.Base(bi.Path) != bn {
-		log.Println("filename not match, skipped")
+	u.install(ctx, bi, name)
+	return nil
+}
+
+func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName string) {
+	// 二进制文件名已经改名，不能直接使用 go install 安装替换
+	// 先安装到临时目录，然后再替换
+	useRawDir := filepath.Base(bi.Path) == filepath.Base(rawName)
+	goBinTMP := filepath.Join(os.TempDir(), "fsgo", "gopt", "gobin")
+
+	cmd := newGoCommand(ctx, "install", bi.Path+"@latest")
+	oe := &cmdutil.OSEnv{}
+	oe.WithEnviron(cmd.Environ())
+	if useRawDir {
+		oe.Set("GOBIN", filepath.Dir(rawName))
+	} else {
+		oe.Set("GOBIN", goBinTMP)
+		log.Println("TMP_GOBIN=", goBinTMP)
+	}
+	cmd.Env = oe.Environ()
+	log.Println("will update:", cmd.String())
+	err := cmd.Run()
+	if err != nil {
+		log.Println(color.RedString("install failed: " + err.Error()))
+		return
+	}
+
+	if !useRawDir {
+		distPath := filepath.Join(goBinTMP, filepath.Base(bi.Path)) + exe()
+		if e1 := mv(distPath, rawName); e1 != nil {
+			log.Println(color.RedString("mv(%q,%q) failed:%v", distPath, rawName, e1))
+			return
+		}
+	}
+	log.Println(color.GreenString("install success"))
+}
+
+func mv(from string, to string) error {
+	to1 := to + "_" + strconv.Itoa(rand.Int())
+	if e1 := os.Rename(to, to1); e1 != nil {
+		return e1
+	}
+	e2 := os.Rename(from, to)
+	if e2 == nil {
+		_ = os.Remove(to1)
 		return nil
 	}
-	cmd := newGoCommand(ctx, "install", bi.Path+"@latest")
-	log.Println("will update:", cmd.String())
-	if err = cmd.Run(); err != nil {
-		log.Println(color.RedString("install failed: " + err.Error()))
-	} else {
-		log.Println(color.GreenString("install success"))
-	}
-	return nil
+	_ = os.Rename(to1, to)
+	return e2
 }
