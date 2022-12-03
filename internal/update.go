@@ -117,9 +117,9 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 	oe := &cmdutil.OSEnv{}
 	oe.WithEnviron(cmd.Environ())
 	if useRawDir {
-		oe.Set("GOBIN", filepath.Dir(rawName))
+		_ = oe.Set("GOBIN", filepath.Dir(rawName))
 	} else {
-		oe.Set("GOBIN", goBinTMP)
+		_ = oe.Set("GOBIN", goBinTMP)
 		log.Println("TMP_GOBIN=", goBinTMP)
 	}
 	cmd.Env = oe.Environ()

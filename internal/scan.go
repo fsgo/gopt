@@ -35,7 +35,7 @@ func (s *Scanner) Run() error {
 			if !info.IsDir() {
 				bi, err2 := buildinfo.ReadFile(path)
 				if err2 == nil {
-					s.Call(path, bi)
+					_ = s.Call(path, bi)
 				}
 			}
 

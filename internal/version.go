@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -50,8 +51,21 @@ func latest(ctx context.Context, path string) (*gomodule.Info, error) {
 	if info != nil {
 		versionCache.Set(ctx, path, info, time.Hour)
 	}
+
 	if e2 == nil {
 		return info, nil
+	}
+
+	domain, _, ok := strings.Cut(path, "/")
+	if !ok {
+		return nil, fmt.Errorf("path no domain: %s", path)
+	}
+
+	k1 := keyInterfaces + "-err-" + domain
+
+	ret1 := versionCache.Has(ctx, k1)
+	if ret1.Has {
+		return nil, fmt.Errorf("domain %q %w", domain, errUnreachable)
 	}
 
 	cmd1 := newGoCommand(ctx, "list", "-m", "-json", path+"@latest")
@@ -59,6 +73,7 @@ func latest(ctx context.Context, path string) (*gomodule.Info, error) {
 	cmd1.Stderr = buf1
 	out, err3 := cmd1.Output()
 	if err3 != nil {
+		_ = versionCache.Set(ctx, k1, err3.Error(), time.Hour)
 		return nil, fmt.Errorf("exec %q: %w\n %s", cmd1.String(), err3, buf1.String())
 	}
 	if err4 := json.Unmarshal(out, &info); err4 != nil {
@@ -69,3 +84,5 @@ func latest(ctx context.Context, path string) (*gomodule.Info, error) {
 	}
 	return info, nil
 }
+
+var errUnreachable = errors.New("unreachable")

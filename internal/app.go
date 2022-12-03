@@ -9,7 +9,34 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
+
+var helpMessage = `
+gopt subCommand [options]
+
+SubCommands:
+    list :
+        list all go apps.
+
+    update  [name]:
+        update all go apps or update app while name is [name]
+
+Self-Update :
+          gopt update gopt
+
+Site    : https://github.com/fsgo/gopt
+Version : dev
+Date    : 2022-12-03
+`
+
+func init() {
+	flag.Usage = func() {
+		out := flag.CommandLine.Output()
+		fmt.Fprintf(out, "Usage of %s:\n", os.Args[0])
+		fmt.Fprintf(out, strings.TrimSpace(helpMessage)+"\n")
+	}
+}
 
 func Run() {
 	flag.Parse()

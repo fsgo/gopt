@@ -45,7 +45,7 @@ func (l *list) Setup(args []string) error {
 	l.flags.BoolVar(&l.latest, "l", true, "get latest version info")
 	l.flags.BoolVar(&l.onlyExpired, "e", false, "filter only expired")
 	l.flags.BoolVar(&l.printJSON, "json", false, "print JSON result")
-	l.flags.IntVar(&l.timeout, "T", 10, `list timeout, seconds`)
+	l.flags.IntVar(&l.timeout, "T", 5, `list timeout, seconds`)
 	return l.flags.Parse(args)
 }
 
@@ -83,7 +83,7 @@ func (l *list) getTimeout() time.Duration {
 	if l.timeout > 0 {
 		return time.Duration(l.timeout) * time.Second
 	}
-	return 10 * time.Second
+	return 5 * time.Second
 }
 
 func (l *list) onCall(name string, bi *buildinfo.BuildInfo) error {
