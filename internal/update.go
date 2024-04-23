@@ -113,9 +113,24 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 	useRawDir := filepath.Base(bi.Path) == filepath.Base(rawName)
 	goBinTMP := filepath.Join(os.TempDir(), "fsgo", "gopt", "gobin")
 
-	cmd := newGoCommand(ctx, "install", bi.Path+"@latest")
+	biEnv := make(map[string]string)
+	args := []string{"install"}
+	for _, tm := range bi.Settings {
+		switch tm.Key {
+		case "-tags":
+			args = append(args, "-tags", tm.Value)
+		case "CGO_ENABLED":
+			biEnv[tm.Key] = tm.Value
+		}
+	}
+	args = append(args, bi.Path+"@latest")
+
+	cmd := newGoCommand(ctx, args...)
 	oe := &cmdutil.OSEnv{}
 	oe.WithEnviron(cmd.Environ())
+	for k, v := range biEnv {
+		_ = oe.Set(k, v)
+	}
 	if useRawDir {
 		_ = oe.Set("GOBIN", filepath.Dir(rawName))
 	} else {
