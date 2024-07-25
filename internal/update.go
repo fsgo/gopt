@@ -31,13 +31,13 @@ func Update(args []string) error {
 
 type updater struct {
 	flags     *flag.FlagSet
-	timeout   int
+	timeout   time.Duration
 	numFailed int
 }
 
 func (u *updater) setup(args []string) error {
 	u.flags = flag.NewFlagSet("update", flag.ExitOnError)
-	u.flags.IntVar(&u.timeout, "T", 60, `update timeout, seconds`)
+	u.flags.DurationVar(&u.timeout, "t", 120*time.Second, `update timeout`)
 	return u.flags.Parse(args)
 }
 
@@ -76,9 +76,9 @@ func (u *updater) Run() error {
 
 func (u *updater) getTimeout() time.Duration {
 	if u.timeout > 0 {
-		return time.Duration(u.timeout) * time.Second
+		return u.timeout
 	}
-	return 60 * time.Second
+	return 120 * time.Second
 }
 
 func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {

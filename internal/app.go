@@ -17,17 +17,20 @@ gopt subCommand [options]
 
 SubCommands:
     list :
-        list all go apps.
+        list all go apps installed in $GOBIN.
 
     update  [name]:
         update all go apps or update app while name is [name]
+
+    install  name:
+        install given go application named "$name"
 
 Self-Update :
           gopt update gopt
 
 Site    : https://github.com/fsgo/gopt
 Version : dev
-Date    : 2022-12-03
+Date    : 2024-07-13
 `
 
 func init() {
@@ -51,6 +54,8 @@ func Run() {
 		err = List(args[2:])
 	case "update":
 		err = Update(args[2:])
+	case "install":
+		err = Install(args[2:])
 	default:
 		err = fmt.Errorf("not support %q", args[1])
 	}

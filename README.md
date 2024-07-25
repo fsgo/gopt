@@ -14,7 +14,7 @@ go install github.com/fsgo/gopt@latest
 ```
 # gopt list -help
 Usage of list:
-  -T int
+  -t int
     	list timeout, seconds (default 10)
   -dev string
     	filter devel. 'yes': only devel; 'no': no devel; default is '': no filter
@@ -47,7 +47,7 @@ Usage of list:
 ```
 #gopt update -help
 Usage of list:
-  -T int
+  -t int
     	update timeout, seconds (default 60)
 ```
 
@@ -59,4 +59,19 @@ Update All Go applications:
 Update with given name:
 ```bash
 # gopt update bin-auto-switcher
+# gopt update dlv
+```
+
+
+### 2.3 Install Go applications
+```
+#gopt install -help
+Usage of install:
+  -t duration
+    	install timeout (default 2m0s)
+```
+
+Install with given name:
+```bash
+# gopt install dlv
 ```

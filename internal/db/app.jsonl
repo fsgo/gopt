@@ -1,0 +1,24 @@
+gorgeous {"Name": "gorgeous","Path": "github.com/fsgo/go_fmt/cmd/gorgeous"}
+bas {"Name": "bas","Path": "github.com/fsgo/bin-auto-switcher/bas"}
+iconvs {"Name": "iconvs","Path": "github.com/fsgo/iconvs"}
+smart-go-dl {"Name": "smart-go-dl","Path": "github.com/fsgo/smart-go-dl"}
+goversion {"Name": "goversion","Path": "github.com/fsgo/goversion"}
+
+godoc {"Name": "godoc","Path": "golang.org/x/tools/cmd/godoc"}
+stringer {"Name": "stringer","Path": "golang.org/x/tools/cmd/stringer"}
+goimports {"Name": "goimports","Path": "golang.org/x/tools/cmd/goimports"}
+callgraph {"Name": "callgraph","Path": "golang.org/x/tools/cmd/callgraph"}
+digraph {"Name": "digraph","Path": "golang.org/x/tools/cmd/digraph"}
+toolstash {"Name": "toolstash","Path": "golang.org/x/tools/cmd/toolstash"}
+deadcode {"Name": "deadcode","Path": "golang.org/x/tools/cmd/deadcode"}
+goyacc {"Name": "goyacc","Path": "golang.org/x/tools/cmd/goyacc"}
+benchcmp {"Name": "benchcmp","Path": "golang.org/x/tools/cmd/benchcmp"}
+ssadump {"Name": "ssadump","Path": "golang.org/x/tools/cmd/ssadump"}
+
+protoc-gen-go {"Name": "protoc-gen-go","Path": "google.golang.org/protobuf/cmd/protoc-gen-go"}
+govulncheck {"Name": "govulncheck","Path": "golang.org/x/vuln/cmd/govulncheck"}
+
+dlv {"Name": "dlv","Path": "github.com/go-delve/delve/cmd/dlv"}
+hugo {"Name": "hugo","Path": "github.com/gohugoio/hugo","Tags":"extended","CGO":true}
+golangci-lint {"Name": "golangci-lint","Path": "github.com/golangci/golangci-lint/cmd/golangci-lint"}
+staticcheck {"Name": "staticcheck","Path": "honnef.co/go/tools/cmd/staticcheck"}

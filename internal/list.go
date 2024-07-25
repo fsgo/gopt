@@ -45,7 +45,7 @@ func (l *list) Setup(args []string) error {
 	l.flags.BoolVar(&l.latest, "l", true, "get latest version info")
 	l.flags.BoolVar(&l.onlyExpired, "e", false, "filter only expired")
 	l.flags.BoolVar(&l.printJSON, "json", false, "print JSON result")
-	l.flags.IntVar(&l.timeout, "T", 5, `list timeout, seconds`)
+	l.flags.IntVar(&l.timeout, "t", 5, `list timeout, seconds`)
 	return l.flags.Parse(args)
 }
 
