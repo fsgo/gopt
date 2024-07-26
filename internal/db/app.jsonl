@@ -14,6 +14,7 @@ deadcode {"Name": "deadcode","Path": "golang.org/x/tools/cmd/deadcode"}
 goyacc {"Name": "goyacc","Path": "golang.org/x/tools/cmd/goyacc"}
 benchcmp {"Name": "benchcmp","Path": "golang.org/x/tools/cmd/benchcmp"}
 ssadump {"Name": "ssadump","Path": "golang.org/x/tools/cmd/ssadump"}
+gops {"Name": "gops","Path": "github.com/google/gops"}
 
 protoc-gen-go {"Name": "protoc-gen-go","Path": "google.golang.org/protobuf/cmd/protoc-gen-go"}
 govulncheck {"Name": "govulncheck","Path": "golang.org/x/vuln/cmd/govulncheck"}

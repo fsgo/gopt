@@ -62,14 +62,23 @@ func (i *installer) getTimeout() time.Duration {
 	return 120 * time.Second
 }
 
+func (i *installer) nameVersion(name string) (string, string) {
+	n, v, found := strings.Cut(name, "@")
+	if !found {
+		return name, "latest"
+	}
+	return n, v
+}
+
 func (i *installer) installOne(name string) error {
+	name, version := i.nameVersion(name)
 	info, ok := installInfos[name]
 	if !ok {
 		return fmt.Errorf("%q not found", name)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), i.getTimeout())
 	defer cancel()
-	args := []string{"install", info.Path + "@latest"}
+	args := []string{"install", info.Path + "@" + version}
 	if info.Tags != "" {
 		args = append(args, "--tags", info.Tags)
 	}

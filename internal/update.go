@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -86,7 +87,7 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 	log.SetPrefix(color.GreenString("[" + bn + "] "))
 	log.Println(color.CyanString(name), bi.Path+"@"+bi.Main.Version)
 
-	if bi.Main.Version == develVersion {
+	if !strings.Contains(bi.Path, ".") && bi.Main.Version == develVersion {
 		log.Println("skipped update by version:", develVersion)
 		return nil
 	}

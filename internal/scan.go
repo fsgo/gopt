@@ -6,6 +6,7 @@ package internal
 
 import (
 	"debug/buildinfo"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -22,7 +23,11 @@ func (s *Scanner) getDirs() []string {
 	if len(s.Dirs) > 0 {
 		return s.Dirs
 	}
-	return strings.Split(os.Getenv("GOBIN"), ":")
+	sep := ":"
+	if isWindows() {
+		sep = ";"
+	}
+	return strings.Split(os.Getenv("GOBIN"), sep)
 }
 
 func (s *Scanner) Run() error {
@@ -30,7 +35,7 @@ func (s *Scanner) Run() error {
 	for _, dir := range dirs {
 		err1 := filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
 			if err != nil {
-				return err
+				return fmt.Errorf("walk %q %w", dir, err)
 			}
 			if !info.IsDir() {
 				bi, err2 := buildinfo.ReadFile(path)
