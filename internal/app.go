@@ -59,6 +59,7 @@ func Run() {
 	default:
 		err = fmt.Errorf("not support %q", args[1])
 	}
+	cleanTmpFiles()
 	if err != nil {
 		log.Fatalf("error: %s failed, %v\n", args[1], err)
 	}

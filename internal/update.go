@@ -10,10 +10,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
-	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -100,7 +97,7 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 		log.Println(color.RedString("get latest info failed: " + err.Error()))
 		return nil
 	}
-	log.Println("found latest:", mp.Version, mp.Time.String())
+	log.Println("found latest:", mp.Version, mp.Time.Local().String())
 	if semver.Compare(mp.Version, bi.Main.Version) < 1 {
 		return nil
 	}
@@ -111,8 +108,7 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName string) {
 	// 二进制文件名已经改名，不能直接使用 go install 安装替换
 	// 先安装到临时目录，然后再替换
-	useRawDir := filepath.Base(bi.Path) == filepath.Base(rawName)
-	goBinTMP := filepath.Join(os.TempDir(), "fsgo", "gopt", "gobin")
+	useRawDir := filepath.Base(bi.Path)+exe() == filepath.Base(rawName)
 
 	biEnv := make(map[string]string)
 	args := []string{"install"}
@@ -132,11 +128,13 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 	for k, v := range biEnv {
 		_ = oe.Set(k, v)
 	}
+
+	goBinTMP := goBinTMPDir()
 	if useRawDir {
 		_ = oe.Set("GOBIN", filepath.Dir(rawName))
 	} else {
 		_ = oe.Set("GOBIN", goBinTMP)
-		log.Println("TMP_GOBIN=", goBinTMP)
+		log.Println("TMP GOBIN=", goBinTMP)
 	}
 	cmd.Env = oe.Environ()
 	log.Println("will update:", cmd.String())
@@ -154,18 +152,4 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 		}
 	}
 	log.Println(color.GreenString("install success"))
-}
-
-func mv(from string, to string) error {
-	to1 := to + "_" + strconv.Itoa(rand.Int())
-	if e1 := os.Rename(to, to1); e1 != nil {
-		return e1
-	}
-	e2 := os.Rename(from, to)
-	if e2 == nil {
-		_ = os.Remove(to1)
-		return nil
-	}
-	_ = os.Rename(to1, to)
-	return e2
 }
