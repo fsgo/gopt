@@ -3,7 +3,7 @@
 package xos
 
 import (
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"strconv"
 )
