@@ -18,6 +18,7 @@ gops {"Name": "gops","Path": "github.com/google/gops"}
 benchstat {"Name": "benchstat", "Path":"golang.org/x/perf/cmd/benchstat"}
 
 protoc-gen-go {"Name": "protoc-gen-go","Path": "google.golang.org/protobuf/cmd/protoc-gen-go"}
+protoc-gen-go-grpc {"Name": "protoc-gen-go-grpc", "Path":"google.golang.org/grpc/cmd/protoc-gen-go-grpc"}
 govulncheck {"Name": "govulncheck","Path": "golang.org/x/vuln/cmd/govulncheck"}
 
 dlv {"Name": "dlv","Path": "github.com/go-delve/delve/cmd/dlv"}
