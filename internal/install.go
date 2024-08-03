@@ -78,10 +78,11 @@ func (i *installer) installOne(name string) error {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), i.getTimeout())
 	defer cancel()
-	args := []string{"install", info.Path + "@" + version}
+	args := []string{"install"}
 	if info.Tags != "" {
 		args = append(args, "--tags", info.Tags)
 	}
+	args = append(args, info.Path+"@"+version)
 	cmd := newGoCommand(ctx, args...)
 	oe := &cmdutil.OSEnv{}
 	oe.WithEnviron(cmd.Environ())

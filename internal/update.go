@@ -110,7 +110,7 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 	// 先安装到临时目录，然后再替换
 	useRawDir := filepath.Base(bi.Path)+exe() == filepath.Base(rawName)
 
-	biEnv := make(map[string]string)
+	biEnv := make(map[string]string, len(bi.Settings))
 	args := []string{"install"}
 	for _, tm := range bi.Settings {
 		switch tm.Key {
