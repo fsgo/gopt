@@ -141,7 +141,7 @@ func (si *scanInfo) String() string {
 	bs := &strings.Builder{}
 	m := si.BuildInfo.Main
 	fmt.Fprint(bs, color.GreenString("%3d %s\n", si.ID, si.Name))
-	fmt.Fprintf(bs, tpl, "Path", si.BuildInfo.Path)
+	fmt.Fprintf(bs, tpl, "FilePath", si.BuildInfo.Path)
 	fmt.Fprintf(bs, tpl, "Go", si.BuildInfo.GoVersion)
 
 	var modTime time.Time
@@ -174,11 +174,11 @@ func (si *scanInfo) String() string {
 
 func (si *scanInfo) JSON() string {
 	info := map[string]any{
-		"ID":      si.ID,
-		"Name":    si.Name,
-		"Path":    si.BuildInfo.Path,
-		"Go":      si.BuildInfo.GoVersion,
-		"Version": si.BuildInfo.Main.Version,
+		"ID":       si.ID,
+		"Ext":      si.Name,
+		"FilePath": si.BuildInfo.Path,
+		"Go":       si.BuildInfo.GoVersion,
+		"Version":  si.BuildInfo.Main.Version,
 	}
 	if si.FileInfo != nil {
 		info["InstallTime"] = si.FileInfo.ModTime().Format(timeLayout)
