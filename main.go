@@ -5,9 +5,13 @@
 package main
 
 import (
+	"context"
+
 	"github.com/fsgo/gopt/internal"
 )
 
 func main() {
-	internal.Run()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	internal.Run(ctx)
 }

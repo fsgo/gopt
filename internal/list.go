@@ -19,14 +19,14 @@ import (
 	"github.com/fsgo/gomodule"
 )
 
-func List(args []string) error {
+func List(ctx context.Context, args []string) error {
 	l := &list{
 		id: 1,
 	}
 	if err := l.Setup(args); err != nil {
 		return err
 	}
-	return l.Run()
+	return l.Run(ctx)
 }
 
 type list struct {
@@ -49,7 +49,7 @@ func (l *list) Setup(args []string) error {
 	return l.flags.Parse(args)
 }
 
-func (l *list) Run() error {
+func (l *list) Run(ctx context.Context) error {
 	args := l.flags.Args()
 	if len(args) > 0 {
 		return fmt.Errorf("not support %q", args)
@@ -63,7 +63,7 @@ func (l *list) Run() error {
 	sc := &Scanner{
 		Call: l.onCall,
 	}
-	return sc.Run()
+	return sc.Run(ctx)
 }
 
 const develVersion = "(devel)"
@@ -86,7 +86,7 @@ func (l *list) getTimeout() time.Duration {
 	return 5 * time.Second
 }
 
-func (l *list) onCall(name string, bi *buildinfo.BuildInfo) error {
+func (l *list) onCall(ctx context.Context, name string, bi *buildinfo.BuildInfo) error {
 	if !l.develFilter(bi.Main) {
 		return nil
 	}
@@ -98,7 +98,7 @@ func (l *list) onCall(name string, bi *buildinfo.BuildInfo) error {
 	si.FileInfo, _ = os.Stat(name)
 
 	if l.latest {
-		ctx, cancel := context.WithTimeout(context.Background(), l.getTimeout())
+		ctx, cancel := context.WithTimeout(ctx, l.getTimeout())
 		defer cancel()
 		si.Latest, si.Err = latest(ctx, bi.Main.Path)
 	}

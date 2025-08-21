@@ -19,12 +19,12 @@ import (
 	"golang.org/x/mod/semver"
 )
 
-func Update(args []string) error {
+func Update(ctx context.Context, args []string) error {
 	u := &updater{}
 	if err := u.setup(args); err != nil {
 		return err
 	}
-	return u.Run()
+	return u.Run(ctx)
 }
 
 type updater struct {
@@ -39,7 +39,7 @@ func (u *updater) setup(args []string) error {
 	return u.flags.Parse(args)
 }
 
-func (u *updater) Run() error {
+func (u *updater) Run(ctx context.Context) error {
 	args := u.flags.Args()
 	if len(args) > 1 {
 		return fmt.Errorf("not support %q", args)
@@ -48,21 +48,21 @@ func (u *updater) Run() error {
 		sc := &Scanner{
 			Call: u.onCall,
 		}
-		return sc.Run()
+		return sc.Run(ctx)
 	}
 	wantName := args[0] + exe()
 	var found bool
 	sc := &Scanner{
-		Call: func(name string, bi *buildinfo.BuildInfo) error {
+		Call: func(ctx context.Context, name string, bi *buildinfo.BuildInfo) error {
 			bn := filepath.Base(name)
 			if bn != wantName {
 				return nil
 			}
 			found = true
-			return u.onCall(name, bi)
+			return u.onCall(ctx, name, bi)
 		},
 	}
-	err := sc.Run()
+	err := sc.Run(ctx)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (u *updater) getTimeout() time.Duration {
 	return 120 * time.Second
 }
 
-func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
+func (u *updater) onCall(ctx context.Context, name string, bi *buildinfo.BuildInfo) error {
 	bn := filepath.Base(name)
 	log.SetPrefix(color.GreenString("[" + bn + "] "))
 	log.Println(color.CyanString(name), bi.Path+"@"+bi.Main.Version)
@@ -89,7 +89,7 @@ func (u *updater) onCall(name string, bi *buildinfo.BuildInfo) error {
 		return nil
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), u.getTimeout())
+	ctx, cancel := context.WithTimeout(ctx, u.getTimeout())
 	defer cancel()
 	mp, err := latest(ctx, bi.Main.Path)
 	if err != nil {
@@ -111,7 +111,7 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 	useRawDir := filepath.Base(bi.Path)+exe() == filepath.Base(rawName)
 
 	biEnv := make(map[string]string, len(bi.Settings))
-	args := []string{"install"}
+	args := []string{"install", "-x"}
 	for _, tm := range bi.Settings {
 		switch tm.Key {
 		case "-tags":

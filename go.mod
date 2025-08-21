@@ -1,13 +1,13 @@
 module github.com/fsgo/gopt
 
-go 1.22.0
+go 1.25.0
 
 require (
 	github.com/fatih/color v1.18.0
-	github.com/fsgo/cmdutil v0.0.5
+	github.com/fsgo/cmdutil v0.0.7
 	github.com/fsgo/fscache v0.0.3
-	github.com/fsgo/gomodule v0.0.3
-	golang.org/x/mod v0.22.0
+	github.com/fsgo/gomodule v0.0.4
+	golang.org/x/mod v0.27.0
 )
 
 require (

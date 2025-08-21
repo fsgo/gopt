@@ -5,6 +5,7 @@
 package internal
 
 import (
+	"context"
 	"debug/buildinfo"
 	"fmt"
 	"io/fs"
@@ -15,7 +16,7 @@ import (
 )
 
 type Scanner struct {
-	Call func(name string, bi *buildinfo.BuildInfo) error
+	Call func(ctx context.Context, name string, bi *buildinfo.BuildInfo) error
 	Dirs []string
 }
 
@@ -30,7 +31,7 @@ func (s *Scanner) getDirs() []string {
 	return strings.Split(os.Getenv("GOBIN"), sep)
 }
 
-func (s *Scanner) Run() error {
+func (s *Scanner) Run(ctx context.Context) error {
 	dirs := s.getDirs()
 	for _, dir := range dirs {
 		err1 := filepath.Walk(dir, func(path string, info fs.FileInfo, err error) error {
@@ -40,14 +41,17 @@ func (s *Scanner) Run() error {
 			if !info.IsDir() {
 				bi, err2 := buildinfo.ReadFile(path)
 				if err2 == nil {
-					_ = s.Call(path, bi)
+					_ = s.Call(ctx, path, bi)
 				}
 			}
 
-			return nil
+			return ctx.Err()
 		})
 		if err1 != nil {
 			return err1
+		}
+		if err := ctx.Err(); err != nil {
+			return err
 		}
 	}
 	return nil

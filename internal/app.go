@@ -5,6 +5,7 @@
 package internal
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -41,7 +42,7 @@ func init() {
 	}
 }
 
-func Run() {
+func Run(ctx context.Context) {
 	flag.Parse()
 	args := stringSlice(os.Args)
 	if len(args) < 2 || args.get(1) == "help" {
@@ -51,11 +52,11 @@ func Run() {
 	var err error
 	switch args[1] {
 	case "list":
-		err = List(args[2:])
+		err = List(ctx, args[2:])
 	case "update":
-		err = Update(args[2:])
+		err = Update(ctx, args[2:])
 	case "install":
-		err = Install(args[2:])
+		err = Install(ctx, args[2:])
 	default:
 		err = fmt.Errorf("not support %q", args[1])
 	}

@@ -19,12 +19,12 @@ import (
 	"github.com/fsgo/cmdutil"
 )
 
-func Install(args []string) error {
+func Install(ctx context.Context, args []string) error {
 	u := &installer{}
 	if err := u.setup(args); err != nil {
 		return err
 	}
-	return u.Run()
+	return u.Run(ctx)
 }
 
 type installer struct {
@@ -38,15 +38,19 @@ func (i *installer) setup(args []string) error {
 	return i.flags.Parse(args)
 }
 
-func (i *installer) Run() error {
+func (i *installer) Run(ctx context.Context) error {
 	args := i.flags.Args()
 	if len(args) == 0 {
 		return errors.New("what app name to install? e.g. 'dlv'")
 	}
 	var failedNames []string
 	for _, name := range args {
-		if err := i.installOne(name); err != nil {
+		if err := i.installOne(ctx, name); err != nil {
 			log.Println(color.RedString(name), err)
+		}
+		if err := ctx.Err(); err != nil {
+			log.Println(color.RedString(name), "context error", err)
+			return err
 		}
 	}
 	if len(failedNames) == 0 {
@@ -70,15 +74,15 @@ func (i *installer) nameVersion(name string) (string, string) {
 	return n, v
 }
 
-func (i *installer) installOne(name string) error {
+func (i *installer) installOne(ctx context.Context, name string) error {
 	name, version := i.nameVersion(name)
 	info, ok := installInfos[name]
 	if !ok {
 		return fmt.Errorf("%q not found", name)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), i.getTimeout())
+	ctx, cancel := context.WithTimeout(ctx, i.getTimeout())
 	defer cancel()
-	args := []string{"install"}
+	args := []string{"install", "-x"}
 	if info.Tags != "" {
 		args = append(args, "--tags", info.Tags)
 	}

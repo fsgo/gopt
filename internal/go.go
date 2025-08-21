@@ -13,7 +13,7 @@ import (
 )
 
 func newGoCommand(ctx context.Context, arg ...string) *exec.Cmd {
-	goBin := gosdk.LatestOrDefault()
+	goBin := gosdk.LatestOrDefault(ctx)
 	cmd := exec.CommandContext(ctx, goBin, arg...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
