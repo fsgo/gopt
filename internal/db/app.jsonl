@@ -3,6 +3,7 @@ bas {"Name": "bas","Path": "github.com/fsgo/bin-auto-switcher/bas"}
 iconvs {"Name": "iconvs","Path": "github.com/fsgo/iconvs"}
 smart-go-dl {"Name": "smart-go-dl","Path": "github.com/fsgo/smart-go-dl"}
 goversion {"Name": "goversion","Path": "github.com/fsgo/goversion"}
+gopt {"Name": "gopt","Path": "github.com/fsgo/gopt"}
 
 godoc {"Name": "godoc","Path": "golang.org/x/tools/cmd/godoc"}
 stringer {"Name": "stringer","Path": "golang.org/x/tools/cmd/stringer"}
@@ -27,3 +28,5 @@ hugo {"Name": "hugo","Path": "github.com/gohugoio/hugo","Tags":"extended","CGO":
 golangci-lint {"Name": "golangci-lint","Path": "github.com/golangci/golangci-lint/cmd/golangci-lint"}
 staticcheck {"Name": "staticcheck","Path": "honnef.co/go/tools/cmd/staticcheck"}
 grf {"Name": "grf","Path": "github.com/cloudwego/goref/cmd/grf"}
+
+task {"Name": "task","Path": "github.com/go-task/task/v3/cmd/task"}

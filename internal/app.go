@@ -38,7 +38,7 @@ func init() {
 	flag.Usage = func() {
 		out := flag.CommandLine.Output()
 		fmt.Fprintf(out, "Usage of %s:\n", os.Args[0])
-		fmt.Fprintf(out, strings.TrimSpace(helpMessage)+"\n")
+		fmt.Fprint(out, strings.TrimSpace(helpMessage)+"\n")
 	}
 }
 

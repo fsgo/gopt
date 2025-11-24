@@ -82,7 +82,7 @@ func (u *updater) getTimeout() time.Duration {
 func (u *updater) onCall(ctx context.Context, name string, bi *buildinfo.BuildInfo) error {
 	bn := filepath.Base(name)
 	log.SetPrefix(color.GreenString("[" + bn + "] "))
-	log.Println(color.CyanString(name), bi.Path+"@"+bi.Main.Version)
+	log.Println(color.CyanString(name), bi.Path+"@"+bi.Main.Version, "Go:", bi.GoVersion)
 
 	if !strings.Contains(bi.Path, ".") && bi.Main.Version == develVersion {
 		log.Println("skipped update by version:", develVersion)
@@ -98,7 +98,8 @@ func (u *updater) onCall(ctx context.Context, name string, bi *buildinfo.BuildIn
 		return nil
 	}
 	log.Println("found latest:", mp.Version, mp.Time.Local().String())
-	if semver.Compare(mp.Version, bi.Main.Version) < 1 {
+	if sameBinGoVersion(bi.GoVersion) && semver.Compare(mp.Version, bi.Main.Version) < 1 {
+		log.Println("skipped: already the latest version")
 		return nil
 	}
 	u.install(ctx, bi, name)
@@ -129,13 +130,10 @@ func (u *updater) install(ctx context.Context, bi *buildinfo.BuildInfo, rawName 
 		_ = oe.Set(k, v)
 	}
 
-	goBinTMP := goBinTMPDir()
-	if useRawDir {
-		_ = oe.Set("GOBIN", filepath.Dir(rawName))
-	} else {
-		_ = oe.Set("GOBIN", goBinTMP)
-		log.Println("TMP GOBIN=", goBinTMP)
-	}
+	goBinTMP := filepath.Dir(rawName)
+	_ = oe.Set("GOBIN", goBinTMP)
+	log.Println("Set GOBIN=", goBinTMP)
+
 	cmd.Env = oe.Environ()
 	log.Println("will update:", cmd.String())
 	err := cmd.Run()

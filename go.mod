@@ -7,7 +7,7 @@ require (
 	github.com/fsgo/cmdutil v0.0.7
 	github.com/fsgo/fscache v0.0.3
 	github.com/fsgo/gomodule v0.0.4
-	golang.org/x/mod v0.27.0
+	golang.org/x/mod v0.30.0
 )
 
 require (
