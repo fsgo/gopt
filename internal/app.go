@@ -31,7 +31,7 @@ Self-Update :
 
 Site    : https://github.com/fsgo/gopt
 Version : dev
-Date    : 2024-08-03
+Date    : 2026-08-20
 `
 
 func init() {

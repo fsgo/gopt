@@ -4,6 +4,7 @@ iconvs {"Name": "iconvs","Path": "github.com/fsgo/iconvs"}
 smart-go-dl {"Name": "smart-go-dl","Path": "github.com/fsgo/smart-go-dl"}
 goversion {"Name": "goversion","Path": "github.com/fsgo/goversion"}
 gopt {"Name": "gopt","Path": "github.com/fsgo/gopt"}
+gogenx {"Name": "gogenx","Path": "github.com/xanygo/anygo/cmd/gogenx"}
 
 godoc {"Name": "godoc","Path": "golang.org/x/tools/cmd/godoc"}
 stringer {"Name": "stringer","Path": "golang.org/x/tools/cmd/stringer"}
@@ -30,3 +31,4 @@ staticcheck {"Name": "staticcheck","Path": "honnef.co/go/tools/cmd/staticcheck"}
 grf {"Name": "grf","Path": "github.com/cloudwego/goref/cmd/grf"}
 
 task {"Name": "task","Path": "github.com/go-task/task/v3/cmd/task"}
+usql {"Name": "usql","Path": "github.com/xo/usql"}
